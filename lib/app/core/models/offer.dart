@@ -1,4 +1,4 @@
-import 'package:marketplace_nuconta/modules/product.dart';
+import 'package:marketplace_nuconta/app/core/models/product.dart';
 
 class Offer {
   String? id;
