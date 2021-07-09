@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:graphql/client.dart';
 import 'package:marketplace_nuconta/app/core/models/customer.dart';
+import 'package:marketplace_nuconta/app/core/services/customer_service.dart';
 import 'package:marketplace_nuconta/app/core/utils/colors_theme.dart';
 import 'package:pretty_json/pretty_json.dart';
 
@@ -17,68 +18,22 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   Customer? customer;
 
-  static const String readViewer = '''
-        query QueryRoot {
-          viewer {
-            id
-            name
-            balance
-            offers{
-              id
-              price
-              product{
-                id
-                name
-                description
-                image
-              }
-            }
-          }
-      }
-      ''';
-
   @override
-  void initState() {
-    super.initState();
-    _getMarket();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _loadCustomer();
   }
 
-  _getMarket() async {
-    print('_getMarket');
-    final _httpLink = HttpLink(
-      'https://staging-nu-needful-things.nubank.com.br/query',
-    );
-
-    final _authLink = AuthLink(
-      getToken: () async => 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhd2Vzb21lY3VzdG9tZXJAZ21haWwuY29tIn0.cGT2KqtmT8KNIJhyww3T8fAzUsCD5_vxuHl5WbXtp8c',
-    );
-
-    Link _link = _authLink.concat(_httpLink);
-
-    /// subscriptions must be split otherwise `HttpLink` will. swallow them
-    // if (websocketEndpoint != null){
-    //   final _wsLink = WebSocketLink(websocketEndpoint!);
-    //   _link = Link.split((request) => request.isSubscription, _wsLink, _link);
-    // }
-
-    final GraphQLClient client = GraphQLClient(
-      /// **NOTE** The default store is the InMemoryStore, which does NOT persist to disk
-      cache: GraphQLCache(),
-      link: _link,
-    );
-
-    final QueryOptions options = QueryOptions(
-      document: gql(readViewer),
-    );
-    final QueryResult result = await client.query(options);
-
-    if (result.hasException) {
-      print(result.exception.toString());
+  _loadCustomer() async {
+    try {
+      CustomerService().getCustomer().then((customerJson) {
+        setState(() {
+          customer = Customer.fromJson(customerJson);
+        });
+      });
+    } catch (e) {
+      print(e);
     }
-    log(prettyJson(result.data, indent: 2));
-    customer = Customer.fromJson(result.data!['viewer']);
-    // log(prettyJson(customer.toJson(), indent: 2));
-    setState(() {});
   }
 
   @override
