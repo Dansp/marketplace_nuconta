@@ -1,73 +1,32 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
-import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:graphql/client.dart';
+import 'package:marketplace_nuconta/modules/customer.dart';
+import 'package:pretty_json/pretty_json.dart';
+
 
 void main() async {
-  // We're using HiveStore for persistence,
-  // so we need to initialize Hive.
-  await initHiveForFlutter();
-
-  final HttpLink httpLink = HttpLink(
-    'https://staging-nu-needful-things.nubank.com.br/query',
-  );
-
-  final AuthLink authLink = AuthLink(
-    getToken: () async => 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhd2Vzb21lY3VzdG9tZXJAZ21haWwuY29tIn0.cGT2KqtmT8KNIJhyww3T8fAzUsCD5_vxuHl5WbXtp8c',
-    // OR
-    // getToken: () => 'Bearer <YOUR_PERSONAL_ACCESS_TOKEN>',
-  );
-
-  final Link link = authLink.concat(httpLink);
-
-  ValueNotifier<GraphQLClient> client = ValueNotifier(
-    GraphQLClient(
-      link: link,
-      // The default store is the InMemoryStore, which does NOT persist to disk
-      cache: GraphQLCache(store: HiveStore()),
-    ),
-  );
-  print(client);
-  runApp(MyApp(client));
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  ValueNotifier<GraphQLClient> client;
-  MyApp(this.client);
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return GraphQLProvider(
-      client: client,
-      child: MaterialApp(
-        title: 'Flutter Demo',
+    return MaterialApp(
+        title: 'Marketplace NuConta',
         theme: ThemeData(
-          // This is the theme of your application.
-          //
-          // Try running your application with "flutter run". You'll see the
-          // application has a blue toolbar. Then, without quitting the app, try
-          // changing the primarySwatch below to Colors.green and then invoke
-          // "hot reload" (press "r" in the console where you ran "flutter run",
-          // or simply save your changes to "hot reload" in a Flutter IDE).
-          // Notice that the counter didn't reset back to zero; the application
-          // is not restarted.
           primarySwatch: Colors.blue,
         ),
-        home: MyHomePage(title: 'Flutter Demo Home Page'),
-      ),
-    );
+        home: MyHomePage(title: 'Marketplace NuConta'),
+      );
   }
 }
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key? key, required this.title}) : super(key: key);
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
 
   final String title;
 
@@ -76,67 +35,86 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+  // String? websocketEndpoint = 'https://staging-nu-needful-things.nubank.com.br/query';
 
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
+  static const String readViewer = '''
+        query QueryRoot {
+          viewer {
+            id
+            name
+            balance
+            offers{
+              id
+              price
+              product{
+                id
+                name
+                description
+                image
+              }
+            }
+          }
+      }
+      ''';
+
+  @override
+  void initState() {
+    super.initState();
+    _getMarket();
+  }
+
+  _getMarket() async {
+    print('_getMarket');
+    final _httpLink = HttpLink(
+      'https://staging-nu-needful-things.nubank.com.br/query',
+    );
+
+    final _authLink = AuthLink(
+      getToken: () async => 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhd2Vzb21lY3VzdG9tZXJAZ21haWwuY29tIn0.cGT2KqtmT8KNIJhyww3T8fAzUsCD5_vxuHl5WbXtp8c',
+    );
+
+    Link _link = _authLink.concat(_httpLink);
+
+    /// subscriptions must be split otherwise `HttpLink` will. swallow them
+    // if (websocketEndpoint != null){
+    //   final _wsLink = WebSocketLink(websocketEndpoint!);
+    //   _link = Link.split((request) => request.isSubscription, _wsLink, _link);
+    // }
+
+    final GraphQLClient client = GraphQLClient(
+      /// **NOTE** The default store is the InMemoryStore, which does NOT persist to disk
+      cache: GraphQLCache(),
+      link: _link,
+    );
+
+    final QueryOptions options = QueryOptions(
+      document: gql(readViewer),
+    );
+    final QueryResult result = await client.query(options);
+
+    if (result.hasException) {
+      print(result.exception.toString());
+    }
+    log(prettyJson(result.data, indent: 2));
+    Customer customer = Customer.fromJson(result.data!['viewer']);
+    log(prettyJson(customer.toJson(), indent: 2));
   }
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
     return Scaffold(
       appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
         title: Text(widget.title),
       ),
       body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
         child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
+              'NUBANK',
             ),
           ],
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
