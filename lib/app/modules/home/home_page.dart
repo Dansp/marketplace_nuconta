@@ -38,9 +38,9 @@ class _HomePageState extends State<HomePage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     SizedBox(height: 50),
-                    Text('${Translations.of(context).text('hello')}, ${_controller.customer!.name}', style: TextStyle(fontSize: 30)),
+                    Text('${Translations.of(context).text('hello')}, ${_controller.customer!.name}', style: TextStyle(fontSize: 30, color: Colors.white)),
                     SizedBox(height: 8),
-                    Text('${MoneyFormat.changeToCurrent('R\$', _controller.customer!.balance)}', style: TextStyle(fontSize: 30)),
+                    Text('${MoneyFormat.changeToCurrent('R\$', _controller.customer!.balance)}', style: TextStyle(fontSize: 30, color: Colors.white)),
                     SizedBox(height: 8),
                     Expanded(
                       child: ListView.builder(
@@ -60,14 +60,14 @@ class _HomePageState extends State<HomePage> {
                                         child:
                                   Column(
                                     children: [
-                                      Expanded(flex: 4, child: PhotoHero(height: 100, photo: _controller.customer!.offers[index].product!.image!)),
+                                      Expanded(flex: 3, child: PhotoHero(photo: _controller.customer!.offers[index].product!.image!)),
                                       Expanded(
-                                        flex: 2,
+                                        flex: 1,
                                         child: Column(
                                           children: [
                                             Text('${_controller.customer!.offers[index].product!.name}', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 18)),
-                                            // Text('${customer!.offers[index].product!.description}', style: TextStyle(color: Colors.black)),
-                                            // Text('${customer!.offers[index].price}', style: TextStyle(color: Colors.black)),
+                                            Divider(),
+                                            Text('${MoneyFormat.changeToCurrent('R\$', _controller.customer!.offers[index].price)}', style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold)),
                                           ],
                                         ),
                                       ),

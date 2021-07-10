@@ -18,13 +18,6 @@ class AppWidget extends StatelessWidget {
           appBarTheme: AppBarTheme(
             color: ColorsTheme.primary,
           ),
-          textTheme: TextTheme(
-            bodyText1: TextStyle(),
-            bodyText2: TextStyle(),
-          ).apply(
-            bodyColor: Colors.white,
-            displayColor: ColorsTheme.accent,
-          ),
         ),
         localizationsDelegates: [
           const TranslationsDelegate(),

@@ -9,6 +9,21 @@ part of 'offer_controller.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$OfferController on _OfferControllerBase, Store {
+  final _$balanceAtom = Atom(name: '_OfferControllerBase.balance');
+
+  @override
+  int get balance {
+    _$balanceAtom.reportRead();
+    return super.balance;
+  }
+
+  @override
+  set balance(int value) {
+    _$balanceAtom.reportWrite(value, super.balance, () {
+      super.balance = value;
+    });
+  }
+
   final _$offerAtom = Atom(name: '_OfferControllerBase.offer');
 
   @override
@@ -24,23 +39,17 @@ mixin _$OfferController on _OfferControllerBase, Store {
     });
   }
 
-  final _$_OfferControllerBaseActionController =
-      ActionController(name: '_OfferControllerBase');
+  final _$buyAsyncAction = AsyncAction('_OfferControllerBase.buy');
 
   @override
-  dynamic buy() {
-    final _$actionInfo = _$_OfferControllerBaseActionController.startAction(
-        name: '_OfferControllerBase.buy');
-    try {
-      return super.buy();
-    } finally {
-      _$_OfferControllerBaseActionController.endAction(_$actionInfo);
-    }
+  Future<bool> buy(int balance, int price) {
+    return _$buyAsyncAction.run(() => super.buy(balance, price));
   }
 
   @override
   String toString() {
     return '''
+balance: ${balance},
 offer: ${offer}
     ''';
   }

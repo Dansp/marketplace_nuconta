@@ -36,6 +36,7 @@ dependencies:
   intl: ^0.17.0
   octo_image: ^1.0.0+1
   cached_network_image: ^3.0.0
+  number_inc_dec: ^0.8.0-null-safety
 
 dev_dependencies:
   flutter_modular_test: ^1.0.1

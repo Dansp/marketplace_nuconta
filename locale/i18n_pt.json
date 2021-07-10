@@ -1,5 +1,6 @@
 {
   "hello": "Olá",
   "loading": "...",
-  "not_found": "Nada encontrado"
+  "not_found": "Nada encontrado",
+  "buy": "Comprar"
 }
