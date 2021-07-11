@@ -2,19 +2,19 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:octo_image/octo_image.dart';
 
-class PhotoHero extends StatefulWidget {
+///A widget for take a photo and make hero animation
+class PhotoHeroWidget extends StatefulWidget {
   final String? photo;
   final VoidCallback? onTap;
 
-  const PhotoHero({ Key? key, this.photo = '', this.onTap}) : super(key: key);
+  const PhotoHeroWidget({ Key? key, this.photo = '', this.onTap}) : super(key: key);
   @override
   _PhotoHeroState createState() => _PhotoHeroState();
 }
 
-class _PhotoHeroState extends State<PhotoHero> {
+class _PhotoHeroState extends State<PhotoHeroWidget> {
 
   Widget build(BuildContext context) {
-    print('Photo ${widget.photo}');
     return SizedBox(
       width: MediaQuery.of(context).size.width,
       child: Hero(

@@ -1,6 +1,16 @@
 {
   "hello": "Olá",
-  "loading": "...",
-  "not_found": "Nada encontrado",
-  "buy": "Comprar"
+  "loading": "Carregando...",
+  "not_found": "Não encontrado",
+  "buy": "Comprar",
+  "balance": "Saldo",
+  "offers": "Ofertas",
+  "no_customer": "Sem cliente",
+  "expired_at": "Expirada em",
+  "expire_at": "Expira em",
+  "oops": "Ops",
+  "offer_expired_at": "Oferta expirada em",
+  "success": "Sucesso",
+  "successful_purchase": "Compra realizada com sucesso! Seu saldo é de",
+  "not_have_balance": "Sem saldo! Seu saldo atual é de"
 }

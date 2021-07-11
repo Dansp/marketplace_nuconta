@@ -443,13 +443,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.5.4"
-  number_inc_dec:
-    dependency: "direct main"
-    description:
-      name: number_inc_dec
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.8.0-null-safety"
   octo_image:
     dependency: "direct main"
     description:

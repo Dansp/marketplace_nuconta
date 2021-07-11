@@ -1,20 +1,29 @@
-import 'offer.dart';
+import 'package:mobx/mobx.dart';
+import '../offer/offer.dart';
 
-class Customer {
+part 'customer.g.dart';
+
+class Customer = _Customer with _$Customer;
+
+abstract class _Customer with Store {
   String? id;
   String? name;
+
+  @observable
   int? balance;
-  List<Offer> offers = [];
 
-  Customer({this.id, this.name, this.balance});
+  @observable
+  ObservableList<Offer> offers = ObservableList();
 
-  Customer.fromJson(Map<String, dynamic> json) {
+  _Customer({this.id, this.name, this.balance});
+
+  _Customer.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     name = json['name'];
     balance = json['balance'];
     offers.clear();
     json['offers'].forEach((v) {
-      offers.add(new Offer.fromJson(v));
+      offers.add(Offer.fromJson(v));
     });
   }
 

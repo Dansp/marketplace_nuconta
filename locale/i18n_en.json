@@ -1,6 +1,16 @@
 {
   "hello": "Hello",
   "loading": "Loading...",
-  "not_found": "Not found",
-  "buy": "Buy"
+  "not_found": "Not founded",
+  "buy": "Buy",
+  "balance": "Balance",
+  "offers": "Offers",
+  "no_customer": "No customer",
+  "expired_at": "Expired at",
+  "expire_at": "Expire at",
+  "oops": "Oops",
+  "offer_expired_at": "Offer expired at",
+  "success": "Success",
+  "successful_purchase": "Successful purchase! Your current balance is",
+  "not_have_balance": "You don't have enough balance, your current balance is"
 }

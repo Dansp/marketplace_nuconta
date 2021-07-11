@@ -1,5 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter_modular/flutter_modular.dart';
-import 'package:marketplace_nuconta/app/core/models/customer.dart';
+import 'package:marketplace_nuconta/app/core/models/customer/customer.dart';
 import 'package:marketplace_nuconta/app/core/services/customer_service.dart';
 import 'package:marketplace_nuconta/app/modules/offer/offer_controller.dart';
 import 'package:mobx/mobx.dart';

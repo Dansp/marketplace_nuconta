@@ -1,4 +1,6 @@
-import 'package:marketplace_nuconta/app/core/models/offer.dart';
+import 'dart:async';
+
+import 'package:marketplace_nuconta/app/core/models/offer/offer.dart';
 import 'package:mobx/mobx.dart';
 
 part 'offer_controller.g.dart';

@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:marketplace_nuconta/app/core/utils/components/custom_dialog_widget.dart';
-import 'package:marketplace_nuconta/app/core/utils/components/photo_hero.dart';
+import 'package:marketplace_nuconta/app/core/utils/components/photo_hero_widget.dart';
+import 'package:marketplace_nuconta/app/core/utils/date_util.dart';
 import 'package:marketplace_nuconta/app/core/utils/money_format.dart';
 import 'package:marketplace_nuconta/app/core/utils/translations.dart';
 import 'package:marketplace_nuconta/app/modules/home/home_controller.dart';
@@ -32,15 +33,16 @@ class _OfferPageState extends State<OfferPage> {
                     child: Container(
                       padding: EdgeInsets.all(16),
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                        Icon(Icons.account_balance_wallet),
-                        Text('${MoneyFormat.changeToCurrent('R\$', _homeController.customer!.balance)}', style: TextStyle(fontSize: 30, color: Colors.black)),
+                          Text('${Translations.of(context).text('balance')}:', style: TextStyle(fontSize: 23, color: Colors.black)),
+                          SizedBox(width: 8),
+                          Text('${MoneyFormat.changeToCurrent('R\$', _homeController.customer!.balance)}', style: TextStyle(fontSize: 23, color: Colors.black)),
                       ],),
                     )),
                 Padding(
                   padding: const EdgeInsets.all(16),
-                  child: PhotoHero(photo: _controller.offer!.product!.image!),
+                  child: PhotoHeroWidget(photo: _controller.offer!.product!.image!),
                 ),
                 Container(
                   padding: EdgeInsets.all(16),
@@ -52,23 +54,29 @@ class _OfferPageState extends State<OfferPage> {
                       Text(_controller.offer!.product!.description!),
                       SizedBox(height: 16),
                       Divider(),
-                      Text('${MoneyFormat.changeToCurrent('R\$', _controller.offer!.price)}', style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold)),
-                      Align(
-                        alignment: Alignment.centerRight,
-                          child: ElevatedButton(onPressed: () {
-                            _controller.buy(_homeController.customer!.balance!, _controller.offer!.price!).then((success) async {
-                              if(success) {
-                                _homeController.customer!.balance = _controller.balance;
-                                setState(() {});
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text('${MoneyFormat.changeToCurrent('R\$', _controller.offer!.price)}', style: TextStyle(color: Colors.green, fontWeight: FontWeight.bold)),
+                          _controller.offer!.expired ?
+                          Text('${Translations.of(context).text('expired_at')}: ${DateUtil.convertToString(_controller.offer!.expireAt.toString(), 'HH:mm')}', style: TextStyle(fontWeight: FontWeight.bold)) :
+                          Text('${Translations.of(context).text('expire_at')}: ${DateUtil.convertToString(_controller.offer!.expireAt.toString(), 'HH:mm')}', style: TextStyle(fontWeight: FontWeight.bold))
+                        ],
+                      ),
+                      SizedBox(height: 16),
+                      Container(
+                        width: double.maxFinite,
+                        child: ElevatedButton(onPressed: () {
+                              if(_controller.offer!.expired) {
                                 showDialog(
                                   context: context,
                                   barrierDismissible: false,
                                   builder: (context) {
                                     return CustomDialog(
-                                      type: TypeDialog.OK,
-                                      title: 'Sucesso!!!',
+                                      type: TypeDialog.WARNING,
+                                      title: Translations.of(context).text('oops'),
                                       msg:
-                                      'Compra realizada com sucesso! Seu saldo atual é de: ${MoneyFormat.changeToCurrent('R\$', _homeController.customer!.balance)}',
+                                      '${Translations.of(context).text('offer_expired_at')}: ${DateUtil.convertToString(_controller.offer!.expireAt.toString(), 'dd/MM/yyyy HH:mm')}',
                                       btn1: true,
                                       btn1Text: 'Ok',
                                       isNavigation: false,
@@ -76,24 +84,46 @@ class _OfferPageState extends State<OfferPage> {
                                   },
                                 );
                               } else {
-                                showDialog(
-                                  context: context,
-                                  barrierDismissible: false,
-                                  builder: (context) {
-                                    return CustomDialog(
-                                      type: TypeDialog.WARNING,
-                                      title: 'Ops',
-                                      msg:
-                                      'Você não te saldo suficiente,seu saldo atual é de: ${MoneyFormat.changeToCurrent('R\$', _homeController.customer!.balance)}',
-                                      btn1: true,
-                                      btn1Text: 'Ok',
-                                      isNavigation: false,
+                                _controller.buy(_homeController.customer!.balance!, _controller.offer!.price!).then((success) async {
+                                  if(success) {
+                                    _homeController.customer!.balance = _controller.balance;
+                                    showDialog(
+                                      context: context,
+                                      barrierDismissible: false,
+                                      builder: (context) {
+                                        return CustomDialog(
+                                          type: TypeDialog.OK,
+                                          title: '${Translations.of(context).text('success')}!!!',
+                                          msg:
+                                          '${Translations.of(context).text('successful_purchase')}: ${MoneyFormat.changeToCurrent('R\$', _homeController.customer!.balance)}',
+                                          btn1: true,
+                                          btn1Text: 'Ok',
+                                          isNavigation: false,
+                                        );
+                                      },
                                     );
-                                  },
-                                );
+                                  } else {
+                                    showDialog(
+                                      context: context,
+                                      barrierDismissible: false,
+                                      builder: (context) {
+                                        return CustomDialog(
+                                          type: TypeDialog.WARNING,
+                                          title: Translations.of(context).text('oops'),
+                                          msg:
+                                          '${Translations.of(context).text('not_have_balance')}: ${MoneyFormat.changeToCurrent('R\$', _homeController.customer!.balance)}',
+                                          btn1: true,
+                                          btn1Text: 'Ok',
+                                          isNavigation: false,
+                                        );
+                                      },
+                                    );
+                                  }
+                                });
                               }
-                            });
-                          }, child: Text(Translations.of(context).text('buy'))))
+
+                            }, child: Text(Translations.of(context).text('buy'))),
+                      )
                     ],
                   ),
                 ),

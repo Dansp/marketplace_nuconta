@@ -1,5 +1,6 @@
 import 'package:graphql/client.dart';
 
+///A Service to consume api using GrathQL for Customer
 class CustomerService {
   final _token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhd2Vzb21lY3VzdG9tZXJAZ21haWwuY29tIn0.cGT2KqtmT8KNIJhyww3T8fAzUsCD5_vxuHl5WbXtp8c';
   final _httpLink = HttpLink(
@@ -25,7 +26,7 @@ class CustomerService {
       }
       ''';
 
-  //Get Customer with market
+  ///Get Customer with a list of offers with product
   Future<Map<String, dynamic>> getCustomer() async {
 
     //Take token for auth
@@ -45,6 +46,8 @@ class CustomerService {
     final QueryOptions options = QueryOptions(
       document: gql(_readViewer),
     );
+
+    //Make the request
     final QueryResult result = await client.query(options);
 
     if (result.hasException) {

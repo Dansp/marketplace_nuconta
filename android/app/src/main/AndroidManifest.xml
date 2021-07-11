@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="br.com.nubank.testDaniel.marketplace_nuconta">
    <application
-        android:label="marketplace_nuconta"
+        android:label="Marketplace NuConta"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"

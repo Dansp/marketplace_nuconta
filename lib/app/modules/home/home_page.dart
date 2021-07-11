@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:marketplace_nuconta/app/core/utils/colors_theme.dart';
-import 'package:marketplace_nuconta/app/core/utils/components/photo_hero.dart';
+import 'package:marketplace_nuconta/app/core/utils/components/photo_hero_widget.dart';
 import 'package:marketplace_nuconta/app/core/utils/money_format.dart';
 import 'package:marketplace_nuconta/app/core/utils/page_route_animation.dart';
 import 'package:marketplace_nuconta/app/core/utils/translations.dart';
@@ -38,10 +38,27 @@ class _HomePageState extends State<HomePage> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     SizedBox(height: 50),
-                    Text('${Translations.of(context).text('hello')}, ${_controller.customer!.name}', style: TextStyle(fontSize: 30, color: Colors.white)),
+                    Card(
+                      elevation: 4,
+                      child: ExpansionTile(
+                          initiallyExpanded: true,
+                          title: Text('${Translations.of(context).text('hello')}, ${_controller.customer!.name}', style: TextStyle(fontSize: 30)),
+                        children: [
+                          Container(
+                            padding: EdgeInsets.all(16),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Text('${Translations.of(context).text('balance')}:', style: TextStyle(fontSize: 23, color: Colors.black)),
+                                SizedBox(width: 8),
+                                Text('${MoneyFormat.changeToCurrent('R\$', _controller.customer!.balance)}', style: TextStyle(fontSize: 23, color: Colors.black)),
+                              ],),
+                          )
+                        ]),
+                    ),
                     SizedBox(height: 8),
-                    Text('${MoneyFormat.changeToCurrent('R\$', _controller.customer!.balance)}', style: TextStyle(fontSize: 30, color: Colors.white)),
-                    SizedBox(height: 8),
+                    Divider(color: Colors.white),
+                    Text(Translations.of(context).text('offers'), style: TextStyle(fontSize: 20, color: Colors.white)),
                     Expanded(
                       child: ListView.builder(
                             shrinkWrap: true,
@@ -50,8 +67,7 @@ class _HomePageState extends State<HomePage> {
                               return InkWell(
                                 onTap: () async {
                                   _controller.selectOffer(index);
-                                  await Navigator.of(context).push(PageRouteAnimation.scale(OfferPage()));
-                                  setState(() {});
+                                  Navigator.of(context).push(PageRouteAnimation.scale(OfferPage()));
                                 },
                                 child: Card(
                                     elevation: 4,
@@ -61,7 +77,7 @@ class _HomePageState extends State<HomePage> {
                                         child:
                                   Column(
                                     children: [
-                                      Expanded(flex: 3, child: PhotoHero(photo: _controller.customer!.offers[index].product!.image!)),
+                                      Expanded(flex: 3, child: PhotoHeroWidget(photo: _controller.customer!.offers[index].product!.image!)),
                                       Expanded(
                                         flex: 1,
                                         child: Column(
@@ -79,7 +95,7 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                   ],
-            ) : Center(child: Text('No items')),
+            ) : Center(child: Text(Translations.of(context).text('no_customer'))),
             );
         }
       ), // This trailing comma makes auto-formatting nicer for build methods.
