@@ -48,9 +48,10 @@ class _HomePageState extends State<HomePage> {
                             itemCount: _controller.customer!.offers.length,
                             itemBuilder: (BuildContext context, index) {
                               return InkWell(
-                                onTap: () {
+                                onTap: () async {
                                   _controller.selectOffer(index);
-                                  Navigator.of(context).push(PageRouteAnimation.scale(OfferPage()));
+                                  await Navigator.of(context).push(PageRouteAnimation.scale(OfferPage()));
+                                  setState(() {});
                                 },
                                 child: Card(
                                     elevation: 4,

@@ -59,6 +59,7 @@ class _OfferPageState extends State<OfferPage> {
                             _controller.buy(_homeController.customer!.balance!, _controller.offer!.price!).then((success) async {
                               if(success) {
                                 _homeController.customer!.balance = _controller.balance;
+                                setState(() {});
                                 showDialog(
                                   context: context,
                                   barrierDismissible: false,
