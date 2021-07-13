@@ -1,16 +1,20 @@
-# marketplace_nuconta
+# Marketplace NuConta
 
 A marketplace for NuConta.
 
-## Getting Started
+## How to run
+Before run, you need a device connect, Android or IOS.
+Go to the folder of project and run the follows commands:
 
-This project is a starting point for a Flutter application.
+```sh
+flutter clean
+flutter pub get
+flutter run
+```
+After run, choose your device if you have more than one.
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## To run test
+It's a simple test only for see business rules.
+```sh
+flutter test
+```
