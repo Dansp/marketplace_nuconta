@@ -1,4 +1,4 @@
-package br.com.nubank.testDaniel.marketplace_nuconta
+package br.com.nubank.test.marketplace_nuconta
 
 import io.flutter.embedding.android.FlutterActivity
 
