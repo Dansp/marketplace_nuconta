@@ -3,7 +3,8 @@
 A marketplace for NuConta.
 
 ## How to run
-Before run, you need a device connect, Android or IOS.
+Before run, you need a device or simulator connect, Android or IOS.
+
 Go to the folder of project and run the follows commands:
 
 ```sh
